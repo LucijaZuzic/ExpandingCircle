@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "442504320839",
+    "project_id": "expandingcircle-6eab6",
+    "storage_bucket": "expandingcircle-6eab6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442504320839:android:1a27b00673a2de69c91e62",
+        "android_client_info": {
+          "package_name": "com.example.expandingcircle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442504320839-2vlrsd2l36k0ojo83gip9rtrtd3bajbk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSH_EVWtoZE-uFfm0DnhQsTXVUhYDatyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442504320839-2vlrsd2l36k0ojo83gip9rtrtd3bajbk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
