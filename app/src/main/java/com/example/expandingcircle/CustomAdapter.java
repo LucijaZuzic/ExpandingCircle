@@ -13,11 +13,21 @@ import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     private final List<Throughput> throughputValues;
+    private final List<String> username;
+    private final List<String> code;
     private final List<Integer> nodes;
+    private final List<Integer> wMin;
+    private final List<Integer> wMax;
+    private final List<Integer> speed;
 
-    public CustomAdapter(List<Throughput> throughputValues, List<Integer> nodes) {
+    public CustomAdapter(List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
         this.throughputValues = throughputValues;
+        this.username = username;
+        this.code = code;
         this.nodes = nodes;
+        this.wMin = wMin;
+        this.wMax = wMax;
+        this.speed = speed;
     }
 
     // Create new views (invoked by the layout manager)
@@ -38,7 +48,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         
-        TextView textViewA,
+        TextView
+                textViewUsername,
+                textViewCode,
+                textViewA,
                 textViewNodes,
                 textViewAe,
                 textViewErrorRate,
@@ -51,7 +64,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewThroughput,
                 textViewW,
                 textViewWe,
-                textViewX;
+                textViewX,
+                textViewWMin,
+                textViewWMax,
+                textViewSpeed;
+        textViewUsername = viewHolder.getTextViewUsername();
+        textViewCode = viewHolder.getTextViewCode();
         textViewA = viewHolder.getTextViewA();
         textViewNodes = viewHolder.getTextViewNodes();
         textViewAe = viewHolder.getTextViewAe();
@@ -66,21 +84,29 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewW = viewHolder.getTextViewW();
         textViewWe = viewHolder.getTextViewWe();
         textViewX = viewHolder.getTextViewX();
+        textViewWMin = viewHolder.getTextViewWMin();
+        textViewWMax = viewHolder.getTextViewWMax();
+        textViewSpeed = viewHolder.getTextViewSpeed();
         Throughput thp = throughputValues.get(position);
+        textViewUsername.setText(HtmlCompat.fromHtml("<b>Username: </b>" + username.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewCode.setText(HtmlCompat.fromHtml("<b>Code: </b>" + code.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewA.setText(HtmlCompat.fromHtml("<b>A: </b>" + ((Float) thp.getA() + " dp"), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewNodes.setText(HtmlCompat.fromHtml("<b>Number Of Targets: </b>" + nodes.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewAe.setText(HtmlCompat.fromHtml("<b>Ae: </b>" + ((Float) thp.getAe()) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewErrorRate.setText(HtmlCompat.fromHtml("<b>Error Rate: </b>" + ((Float) thp.getErrorRate()) + "%", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewID.setText(HtmlCompat.fromHtml("<b>ID: </b>" + ((Float) thp.getID()) + " b", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewIDe.setText(HtmlCompat.fromHtml("<b>IDe: </b>" + ((Float) thp.getIDe()) + " b", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewAe.setText(HtmlCompat.fromHtml("<b>Ae: </b>" + thp.getAe() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewErrorRate.setText(HtmlCompat.fromHtml("<b>Error Rate: </b>" + thp.getErrorRate() + "%", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewID.setText(HtmlCompat.fromHtml("<b>ID: </b>" + thp.getID() + " b", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewIDe.setText(HtmlCompat.fromHtml("<b>IDe: </b>" + thp.getIDe() + " b", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewMisses.setText(HtmlCompat.fromHtml("<b>Misses: </b>" + ((Integer) thp.getMisses()), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewMT.setText(HtmlCompat.fromHtml("<b>MT: </b>" + ((Float) thp.getMT() + " ms"), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewNumberOfTrials.setText(HtmlCompat.fromHtml("<b>Number of Trials: </b>" + ((Integer) thp.getNumberOfTrials()), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewSDx.setText(HtmlCompat.fromHtml("<b>SDx: </b>" + ((Float) thp.getSDx()) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewThroughput.setText(HtmlCompat.fromHtml("<b>Thp: </b>" + ((Float) thp.getThroughput()) + " b/ms", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewW.setText(HtmlCompat.fromHtml("<b>W: </b>" + ((Float) thp.getW()) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewWe.setText(HtmlCompat.fromHtml("<b>We: </b>" + ((Float) thp.getWe()) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewX.setText(HtmlCompat.fromHtml("<b>X: </b>" + ((Float) thp.getX()) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewSDx.setText(HtmlCompat.fromHtml("<b>SDx: </b>" + thp.getSDx() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewThroughput.setText(HtmlCompat.fromHtml("<b>Thp: </b>" + thp.getThroughput() + " b/ms", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewW.setText(HtmlCompat.fromHtml("<b>Avg. W: </b>" + thp.getW() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewWe.setText(HtmlCompat.fromHtml("<b>We: </b>" + thp.getWe() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewX.setText(HtmlCompat.fromHtml("<b>X: </b>" + thp.getX() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewWMin.setText(HtmlCompat.fromHtml("<b>Min. W: </b>" + wMin.get(position) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewWMax.setText(HtmlCompat.fromHtml("<b>Max. W: </b>" + wMax.get(position) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewSpeed.setText(HtmlCompat.fromHtml("<b>Speed: </b>" + speed.get(position) + " dp/s", HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -94,7 +120,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
      * (custom ViewHolder).
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textViewA,
+        private final TextView
+                textViewUsername,
+                textViewCode,
+                textViewA,
                 textViewNodes,
                 textViewAe, 
                 textViewErrorRate, 
@@ -107,11 +136,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewThroughput,
                 textViewW,
                 textViewWe,
-                textViewX;
+                textViewX,
+                textViewWMin,
+                textViewWMax,
+                textViewSpeed;
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
 
+            textViewUsername = view.findViewById(R.id.textViewUsername);
+            textViewCode = view.findViewById(R.id.textViewCode);
             textViewA = view.findViewById(R.id.textViewA);
             textViewNodes = view.findViewById(R.id.textViewNodes);
             textViewAe = view.findViewById(R.id.textViewAe);
@@ -126,8 +160,17 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             textViewW = view.findViewById(R.id.textViewW);
             textViewWe = view.findViewById(R.id.textViewWe);
             textViewX = view.findViewById(R.id.textViewX);
+            textViewWMin = view.findViewById(R.id.textViewWMin);
+            textViewWMax = view.findViewById(R.id.textViewWMax);
+            textViewSpeed = view.findViewById(R.id.textViewSpeed);
         }
 
+        public TextView getTextViewUsername() {
+            return textViewUsername;
+        }
+        public TextView getTextViewCode() {
+            return textViewCode;
+        }
         public TextView getTextViewA() {
             return textViewA;
         }
@@ -169,6 +212,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         }
         public TextView getTextViewX() {
             return textViewX;
+        }
+        public TextView getTextViewWMin() {
+            return textViewWMin;
+        }
+        public TextView getTextViewWMax() {
+            return textViewWMax;
+        }
+        public TextView getTextViewSpeed() {
+            return textViewSpeed;
         }
         
         

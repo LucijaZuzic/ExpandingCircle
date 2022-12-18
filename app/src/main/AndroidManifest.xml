@@ -21,6 +21,7 @@
         </activity>
         <activity
             android:name=".CircleActivity"
+            android:launchMode="singleTask"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data

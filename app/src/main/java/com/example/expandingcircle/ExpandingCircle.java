@@ -27,6 +27,11 @@ public class ExpandingCircle extends View {
     private final CardView outer_edge_ring, ring, inner_edge_ring, fill;
     private final TextView speedTextView, radiusTextView, timeTextView;
     private PointF selected;
+    private boolean stopped = false;
+
+    public void stop() {
+        stopped = true;
+    }
 
     private Activity getActivity(View v) {
         Context context = v.getContext();
@@ -44,8 +49,10 @@ public class ExpandingCircle extends View {
         final int delay = (int) (1000 * update_interval); // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
-                changeSize();
-                handler.postDelayed(this, delay);
+                if (!stopped) {
+                    changeSize();
+                    handler.postDelayed(this, delay);
+                }
             }
         }, delay);
     }
@@ -72,9 +79,12 @@ public class ExpandingCircle extends View {
         ring = (CardView) outer_edge_ring.getChildAt(0);
         inner_edge_ring = (CardView) ring.getChildAt(0);
         fill = (CardView) inner_edge_ring.getChildAt(0);
-        changeSize();
+        changeLayoutParams();
         // Set the drag event listener for the View.
         bg.setOnDragListener( (v, e) -> {
+            if (stopped) {
+                return true;
+            }
 
             // Handles each of the expected events.
             switch(e.getAction()) {
@@ -175,12 +185,12 @@ public class ExpandingCircle extends View {
                     // Does a getResult(), and displays what happened.
                     if (e.getResult()) {
                         if (getActivity(parent) instanceof CircleActivity) {
-                            activity.nextLevel(true);
+                            activity.nextLevel();
                             CircleActivity.error.add(false);
                         }
                     } else {
                         if (getActivity(parent) instanceof CircleActivity) {
-                            activity.nextLevel(false);
+                            activity.nextLevel();
                             CircleActivity.error.add(true);
                         }
                     }

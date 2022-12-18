@@ -14,26 +14,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NumberPicker widthNumberPicker = findViewById(R.id.widthNumberPicker);
-        widthNumberPicker.setMinValue(50);
-        widthNumberPicker.setMaxValue(140);
-        NumberPicker numberOfTargetsNumberPicker = findViewById(R.id.numberOfTargetsNumberPicker);
-        numberOfTargetsNumberPicker.setMinValue(3);
-        numberOfTargetsNumberPicker.setMaxValue(10);
-        NumberPicker.Formatter formatter = value -> {
-            int temp = value * 2;
-            return "" + temp;
-        };
-        numberOfTargetsNumberPicker.setFormatter(formatter);
         EditText username = findViewById(R.id.username);
         Button start = findViewById(R.id.start);
         start.setOnClickListener((e) -> {
             Intent i = new Intent(this.getApplicationContext(), CircleActivity.class);
             i.putExtra("username", username.getText().toString());
-            i.putExtra("speed", 100.0);
-            i.putExtra("level_up", 0.0);
-            i.putExtra("width", (float) widthNumberPicker.getValue());
-            i.putExtra("nodes", numberOfTargetsNumberPicker.getValue() * 2);
+            i.putExtra("speed", 50.0);
+            i.putExtra("level_up", 50.0);
+            i.putExtra("width", 100.0f);
+            i.putExtra("nodes", 5);
             i.putExtra("start_node", 0);
             startActivity(i);
         });

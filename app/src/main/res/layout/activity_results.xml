@@ -54,11 +54,11 @@
         android:minHeight="48dp">
 
         <CheckBox
-            android:id="@+id/checkBoxWidth"
+            android:id="@+id/checkBoxSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="21sp"
-            android:text="@string/W" />
+            android:text="@string/speed" />
 
         <CheckBox
             android:id="@+id/checkBoxNodes"
@@ -77,11 +77,11 @@
         android:minHeight="48dp">
 
         <CheckBox
-            android:id="@+id/checkBoxNodesAndWidth"
+            android:id="@+id/checkBoxNodesAndSpeed"
             android:textSize="21sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/number_of_targets_and_W" />
+            android:text="@string/number_of_targets_and_speed" />
 
     </LinearLayout>
 
@@ -107,7 +107,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/W"
+            android:text="@string/speed"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="21sp"
@@ -127,12 +127,14 @@
         <NumberPicker
             android:id="@+id/numberOfTargetsNumberPicker"
             android:layout_width="0dp"
+            android:descendantFocusability="blocksDescendants"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <NumberPicker
-            android:id="@+id/widthNumberPicker"
+            android:id="@+id/speedNumberPicker"
             android:layout_width="0dp"
+            android:descendantFocusability="blocksDescendants"
             android:layout_marginStart="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
