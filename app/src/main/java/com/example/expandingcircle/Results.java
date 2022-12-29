@@ -57,6 +57,7 @@ public class Results extends AppCompatActivity {
     private CheckBox checkBoxNodesAndSpeed, checkBoxNodes, checkBoxSpeed;
     private NumberPicker numberOfTargetsNumberPicker, speedNumberPicker;
     private TextView noResults;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,18 +86,30 @@ public class Results extends AppCompatActivity {
             if (checkBoxNodes.isChecked()) {
                 checkBoxNodesAndSpeed.setChecked(false);
                 checkBoxSpeed.setChecked(false);
+            } else {
+                if (!checkBoxNodesAndSpeed.isChecked() && !checkBoxSpeed.isChecked()) {
+                    checkBoxSpeed.setChecked(true);
+                }
             }
         });
         checkBoxNodesAndSpeed.setOnCheckedChangeListener((v, e) -> {
             if (checkBoxNodesAndSpeed.isChecked()) {
                 checkBoxNodes.setChecked(false);
                 checkBoxSpeed.setChecked(false);
+            } else {
+                if (!checkBoxNodes.isChecked() && !checkBoxSpeed.isChecked()) {
+                    checkBoxSpeed.setChecked(true);
+                }
             }
         });
         checkBoxSpeed.setOnCheckedChangeListener((v, e) -> {
             if (checkBoxSpeed.isChecked()) {
                 checkBoxNodes.setChecked(false);
                 checkBoxNodesAndSpeed.setChecked(false);
+            } else {
+                if (!checkBoxNodes.isChecked() && !checkBoxNodesAndSpeed.isChecked()) {
+                    checkBoxNodes.setChecked(true);
+                }
             }
         });
         noResults = findViewById(R.id.noResults);
@@ -107,7 +120,8 @@ public class Results extends AppCompatActivity {
         });
         ImageButton startSearch = findViewById(R.id.startSearch);
         startSearch.setOnClickListener(v -> get());
-        get();
+        recyclerView = findViewById(R.id.results);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     // Calculate the mean of the values in a Double List.
@@ -213,8 +227,6 @@ public class Results extends AppCompatActivity {
                             speedList.add(thpSpeed.get(thp));
                         }
                         CustomAdapter customAdapter = new CustomAdapter(throughputValues, nodesList, usernameList, codeList, widthMinList, widthMaxList, speedList);
-                        RecyclerView recyclerView = findViewById(R.id.results);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(this));
                         recyclerView.setAdapter(customAdapter);
                         if (Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() != 0) {
                             recyclerView.setVisibility(View.VISIBLE);

@@ -19,10 +19,10 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener((e) -> {
             Intent i = new Intent(this.getApplicationContext(), CircleActivity.class);
             i.putExtra("username", username.getText().toString());
-            i.putExtra("speed", 50.0);
+            i.putExtra("speed", 150.0);
             i.putExtra("level_up", 50.0);
             i.putExtra("width", 100.0f);
-            i.putExtra("nodes", 5);
+            i.putExtra("nodes", 23);
             i.putExtra("start_node", 0);
             startActivity(i);
         });

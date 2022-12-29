@@ -9,34 +9,145 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:minWidth="48dp"
-        android:minHeight="48dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/search"
-            android:textSize="21sp"
-            android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/startSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:src="@drawable/ic_baseline_search_24" />
+            android:minHeight="48dp">
 
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/startSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_search_24" />
+
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_arrow_back_24" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:background="?android:attr/listDivider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:src="@drawable/ic_baseline_arrow_back_24" />
+            android:minHeight="48dp">
+
+            <CheckBox
+                android:id="@+id/checkBoxSpeed"
+                android:checked="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="21sp"
+                android:text="@string/speed" />
+
+            <CheckBox
+                android:id="@+id/checkBoxNodes"
+                android:textSize="21sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/number_of_targets" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:minWidth="48dp"
+            android:minHeight="48dp">
+
+            <CheckBox
+                android:id="@+id/checkBoxNodesAndSpeed"
+                android:textSize="21sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/number_of_targets_and_speed" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp" >
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/number_of_targets"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/speed"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="21sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:minWidth="48dp"
+            android:minHeight="48dp">
+
+            <NumberPicker
+                android:id="@+id/numberOfTargetsNumberPicker"
+                android:layout_width="0dp"
+                android:descendantFocusability="blocksDescendants"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <NumberPicker
+                android:id="@+id/speedNumberPicker"
+                android:layout_width="0dp"
+                android:descendantFocusability="blocksDescendants"
+                android:layout_marginStart="10dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -48,115 +159,23 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:minWidth="48dp"
-        android:minHeight="48dp">
-
-        <CheckBox
-            android:id="@+id/checkBoxSpeed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="21sp"
-            android:text="@string/speed" />
-
-        <CheckBox
-            android:id="@+id/checkBoxNodes"
-            android:textSize="21sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number_of_targets" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:minWidth="48dp"
-        android:minHeight="48dp">
-
-        <CheckBox
-            android:id="@+id/checkBoxNodesAndSpeed"
-            android:textSize="21sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number_of_targets_and_speed" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp" >
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_marginStart="10dp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/number_of_targets"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:id="@+id/noResults"
             android:textSize="21sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/speed"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="21sp"
-            android:textStyle="bold"/>
+            android:text="@string/no_results"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:minWidth="48dp"
-        android:minHeight="48dp">
-
-        <NumberPicker
-            android:id="@+id/numberOfTargetsNumberPicker"
-            android:layout_width="0dp"
-            android:descendantFocusability="blocksDescendants"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <NumberPicker
-            android:id="@+id/speedNumberPicker"
-            android:layout_width="0dp"
-            android:descendantFocusability="blocksDescendants"
-            android:layout_marginStart="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_gravity="center"
-        android:background="?android:attr/listDivider" />
-
-    <TextView
-        android:id="@+id/noResults"
-        android:textSize="21sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_results"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
