@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -12,21 +14,23 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.opencsv.CSVWriter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Predicate;
 
 public class Results extends AppCompatActivity {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -50,10 +54,6 @@ public class Results extends AppCompatActivity {
     private final Comparator<Throughput> widthCmp = Comparator.comparing(thp -> (Math.round(thp.getW())));
     private final Comparator<Throughput> finalCmp = speedCmp.thenComparing(nodesCmp).thenComparing(codeCmp).thenComparing(usernameCmp).thenComparing(widthCmp);
     private final Set<Throughput> throughputSelected = new TreeSet<>(finalCmp);
-    private final List<PointF> from = new ArrayList<>();
-    private final List<PointF> to = new ArrayList<>();
-    private final List<PointF> select = new ArrayList<>();
-    private final List<Float> mt = new ArrayList<>();
     private CheckBox checkBoxNodesAndSpeed, checkBoxNodes, checkBoxSpeed;
     private NumberPicker numberOfTargetsNumberPicker, speedNumberPicker;
     private TextView noResults;
@@ -119,7 +119,9 @@ public class Results extends AppCompatActivity {
             startActivity(intent);
         });
         ImageButton startSearch = findViewById(R.id.startSearch);
-        startSearch.setOnClickListener(v -> get());
+        startSearch.setOnClickListener(v -> get(false));
+        ImageButton save = findViewById(R.id.save);
+        save.setOnClickListener(v -> get(true));
         recyclerView = findViewById(R.id.results);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -133,7 +135,7 @@ public class Results extends AppCompatActivity {
         return mean / n.size();
     }
 
-    public void get() {
+    public void get(boolean saveEnable) {
         Integer nodesToFind = numberOfTargetsNumberPicker.getValue() * 2 - 1;
         Integer speedToFind = speedNumberPicker.getValue() * 50;
 
@@ -217,7 +219,49 @@ public class Results extends AppCompatActivity {
                                 }
                             }
                         }
+
+                        List<String[]> data = new ArrayList<String[]>();
+                        data.add(new String[] {
+                                "Username",
+                                "Code",
+                                "Thp",
+                                "Number Of Targets",
+                                "A",
+                                "Ae",
+                                "Avg. W",
+                                "We",
+                                "Error Rate",
+                                "Misses",
+                                "Number Of Trials",
+                                "MT",
+                                "ID",
+                                "IDe",
+                                "X",
+                                "SDx",
+                                "Min. W",
+                                "Max. W",
+                                "Speed"});
                         for (Throughput thp : throughputSelected) {
+                            data.add(new String[] {
+                                    thpUsernames.get(thp),
+                                    thpCodes.get(thp),
+                                    ((Float) thp.getThroughput()).toString(),
+                                    ((Integer) thpNodes.get(thp)).toString(),
+                                    ((Float) thp.getA()).toString(),
+                                    ((Float) thp.getAe()).toString(),
+                                    ((Float) thp.getW()).toString(),
+                                    ((Float) thp.getWe()).toString(),
+                                    ((Float) thp.getErrorRate()).toString(),
+                                    ((Integer) thp.getMisses()).toString(),
+                                    ((Integer) thp.getNumberOfTrials()).toString(),
+                                    ((Float) thp.getMT()).toString(),
+                                    ((Float) thp.getID()).toString(),
+                                    ((Float) thp.getIDe()).toString(),
+                                    ((Float) thp.getX()).toString(),
+                                    ((Float) thp.getSDx()).toString(),
+                                    ((Integer) thpWidthMin.get(thp)).toString(),
+                                    ((Integer) thpWidthMax.get(thp)).toString(),
+                                    ((Integer) thpSpeed.get(thp)).toString()});
                             throughputValues.add(thp);
                             usernameList.add(thpUsernames.get(thp));
                             codeList.add(thpCodes.get(thp));
@@ -225,6 +269,9 @@ public class Results extends AppCompatActivity {
                             widthMinList.add(thpWidthMin.get(thp));
                             widthMaxList.add(thpWidthMax.get(thp));
                             speedList.add(thpSpeed.get(thp));
+                        }
+                        if (saveEnable) {
+                            saveFile(data);
                         }
                         CustomAdapter customAdapter = new CustomAdapter(throughputValues, nodesList, usernameList, codeList, widthMinList, widthMaxList, speedList);
                         recyclerView.setAdapter(customAdapter);
@@ -237,5 +284,100 @@ public class Results extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void saveFile(List<String[]> data) {
+        String textToSend = "";
+        for (String[] arr: data) {
+            int index = 0;
+            for (String s: arr) {
+                textToSend += s;
+                index++;
+                if (index == arr.length) {
+                    textToSend += "\n";
+                } else {
+                    textToSend += ";";
+                }
+            }
+        }
+        Integer nodesToFind = numberOfTargetsNumberPicker.getValue() * 2 - 1;
+        Integer speedToFind = speedNumberPicker.getValue() * 50;
+        String fileName = "ExpandingCircle";
+        if (checkBoxNodes.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
+            fileName += "_nodes_" + nodesToFind.toString();
+        }
+        if (checkBoxSpeed.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
+            fileName += "_speed_" + speedToFind.toString();
+        }
+        fileName += ".csv";
+
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"lzuzic49@gmail.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT, fileName);
+        i.putExtra(Intent.EXTRA_TEXT   , textToSend);
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
+        /*
+        Integer nodesToFind = numberOfTargetsNumberPicker.getValue() * 2 - 1;
+        Integer speedToFind = speedNumberPicker.getValue() * 50;
+        // String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("ExpandingCircle", Context.MODE_PRIVATE);
+        String baseDir = directory.getAbsolutePath();
+        String fileName = "ExpandingCircle";
+        if (checkBoxNodes.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
+            fileName += "_nodes_" + nodesToFind.toString();
+        }
+        if (checkBoxSpeed.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
+            fileName += "_speed_" + speedToFind.toString();
+        }
+        fileName += ".csv";
+        String filePath = baseDir + File.separator + fileName;
+        File f = new File(filePath);
+        CSVWriter writer;
+        TextView error = findViewById(R.id.error);
+
+        // File exist
+        if(f.exists()&&!f.isDirectory())
+        {
+            FileWriter mFileWriter = null;
+            try {
+                mFileWriter = new FileWriter(filePath, true);
+                writer = new CSVWriter(mFileWriter);
+                writer.writeAll(data);
+                Toast.makeText(this, filePath, Toast.LENGTH_SHORT).show();
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    Toast.makeText(this,  "1 " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, "2 " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            try {
+                writer = new CSVWriter(new FileWriter(filePath));
+                writer.writeAll(data);
+                Toast.makeText(this, filePath, Toast.LENGTH_SHORT).show();
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    Toast.makeText(this, "3 " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
+                error.setText(e.getMessage());
+                Toast.makeText(this, "4 " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }*/
     }
 }
