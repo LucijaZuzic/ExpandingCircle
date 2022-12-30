@@ -76,7 +76,7 @@ public class Results extends AppCompatActivity {
         speedNumberPicker.setMaxValue(3);
         NumberPicker.Formatter formatter2 = value -> {
             int temp = value * 50;
-            return "" + temp;
+            return "" + temp + " px/s";
         };
         speedNumberPicker.setFormatter(formatter2);
         checkBoxNodesAndSpeed = findViewById(R.id.checkBoxNodesAndSpeed);

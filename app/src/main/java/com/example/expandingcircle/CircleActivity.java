@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -161,17 +163,23 @@ public class CircleActivity extends AppCompatActivity {
         array = new View[nodes];
 
         for (int node_number = 0; node_number < nodes; node_number++) {
-            if (node_number != end_node) {
-                array[node_number] = new FloatingActionButton(this);
-            } else {
-                array[node_number] = new LinearLayout(this);
+            if (node_number == end_node) {
+                continue;
             }
+            array[node_number] = new FloatingActionButton(this);
             array[node_number].setLayoutParams(setPosition(node_number));
             if (node_number != start_node) {
                 array[node_number].setEnabled(false);
             }
             drag_area.addView(array[node_number]);
         }
+
+        LinearLayout ll = new LinearLayout(this);
+        ll.setGravity(Gravity.CENTER);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        array[end_node] = ll;
+        array[end_node].setLayoutParams(setPosition(end_node));
+        drag_area.addView(array[end_node]);
 
         drag = (FloatingActionButton) array[start_node];
         parent = (LinearLayout) array[end_node];
@@ -180,10 +188,9 @@ public class CircleActivity extends AppCompatActivity {
             ec.stop();
         }
 
-        ec = new ExpandingCircle(this, drag, parent, banner, speedTextView, radiusTextView, timeTextView, speed, 0.01, width, width, maxWidth, 10, 10, 0.5, true);
+        ec = new ExpandingCircle(this, (int) circleRadius, nodes, drag, parent, banner, speedTextView, radiusTextView, timeTextView, speed, 0.01, width, width, maxWidth, 10, 10, 0.5, true);
 
         drag.setOnLongClickListener( v -> {
-
             startTime = System.currentTimeMillis();
             ec.startMoving();
             // Instantiate the drag shadow builder.
@@ -204,8 +211,8 @@ public class CircleActivity extends AppCompatActivity {
 
     private ConstraintLayout.LayoutParams setPosition(int node_number) {
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                (int) maxWidth,
+                (int) maxWidth);
         lp.circleConstraint = center.getId();
         lp.circleRadius = (int) circleRadius;
         lp.circleAngle = (float) (360.0 / nodes * node_number);

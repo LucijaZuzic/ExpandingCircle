@@ -6,13 +6,16 @@ import android.content.ContextWrapper;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
@@ -20,9 +23,8 @@ public class ExpandingCircle extends View {
 
     private final double speed, update_interval, min_radius, max_radius, ring_radius, ring_edge_radius, curve;
     private double radius;
-    private double last_radius;
     private boolean expand;
-    private int num_updates;
+    private int num_updates, nodes, circleRadius;
     private final LinearLayout banner, bg;
     private final CardView outer_edge_ring, ring, inner_edge_ring, fill;
     private final TextView speedTextView, radiusTextView, timeTextView;
@@ -57,8 +59,10 @@ public class ExpandingCircle extends View {
         }, delay);
     }
 
-    public ExpandingCircle(CircleActivity activity, View drag, ViewGroup parent, LinearLayout banner, TextView speedTextView, TextView radiusTextView, TextView timeTextView, double speed, double update_interval, double radius, double min_radius, double max_radius, double ring_radius, double ring_edge_radius, double curve, boolean expand) {
+    public ExpandingCircle(CircleActivity activity, int circleRadius, int nodes, View drag, ViewGroup parent, LinearLayout banner, TextView speedTextView, TextView radiusTextView, TextView timeTextView, double speed, double update_interval, double radius, double min_radius, double max_radius, double ring_radius, double ring_edge_radius, double curve, boolean expand) {
         super(parent.getContext());
+        this.circleRadius = circleRadius;
+        this.nodes = nodes;
         this.banner = banner;
         this.speedTextView = speedTextView;
         this.radiusTextView = radiusTextView;
@@ -92,7 +96,7 @@ public class ExpandingCircle extends View {
                 case DragEvent.ACTION_DRAG_STARTED:
 
                     int[] parentStart = new int[2];
-                    parent.getLocationOnScreen(parentStart);
+                    parent.getLocationInWindow(parentStart);
 
                     selected = new PointF((float) parentStart[0] + e.getX(), (float) parentStart[1] + e.getY());
 
@@ -120,7 +124,7 @@ public class ExpandingCircle extends View {
                 case DragEvent.ACTION_DRAG_LOCATION:
 
                     int[] parentLocation = new int[2];
-                    parent.getLocationOnScreen(parentLocation);
+                    parent.getLocationInWindow(parentLocation);
 
                     selected = new PointF((float) parentLocation[0] + e.getX(), (float) parentLocation[1] + e.getY());
 
@@ -141,7 +145,7 @@ public class ExpandingCircle extends View {
                 case DragEvent.ACTION_DROP:
 
                     int[] parentPosition = new int[2];
-                    parent.getLocationOnScreen(parentPosition);
+                    parent.getLocationInWindow(parentPosition);
 
                     selected = new PointF((float) parentPosition[0] + e.getX(), (float) parentPosition[1] + e.getY());
 
@@ -157,24 +161,26 @@ public class ExpandingCircle extends View {
                 case DragEvent.ACTION_DRAG_ENDED:
 
                     int[] src = new int[2];
-                    drag.getLocationOnScreen(src);
+                    drag.getLocationInWindow(src);
 
                     double src_centreX = src[0] + drag.getWidth() / 2.0;
                     double src_centreY = src[1] + drag.getHeight() / 2.0;
 
                     int[] dest = new int[2];
-                    parent.getLocationOnScreen(dest);
+                    parent.getLocationInWindow(dest);
 
                     double dest_centreX = dest[0] + parent.getWidth() / 2.0;
                     double dest_centreY = dest[1] + parent.getHeight() / 2.0;
 
-                    CircleActivity.amplitude = (float) Math.sqrt(Math.pow(src_centreX - dest_centreX, 2) + Math.pow(src_centreY - dest_centreY, 2));
+                    //CircleActivity.amplitude = (float) Math.sqrt(Math.pow(src_centreX - dest_centreX, 2) + Math.pow(src_centreY - dest_centreY, 2));
+
+                    CircleActivity.amplitude = (float) (2 * circleRadius * Math.cos(Math.PI / 2.0 / nodes));
 
                     CircleActivity.from.add(new PointF((float) src_centreX, (float) src_centreY));
                     CircleActivity.to.add(new PointF((float) dest_centreX, (float) dest_centreY));
                     CircleActivity.select.add(selected);
                     CircleActivity.mt.add((float) (System.currentTimeMillis() - activity.startTime));
-                    CircleActivity.currentWidths.add((float) last_radius);
+                    CircleActivity.currentWidths.add((float) drag.getWidth());
 
                     // Turns off any color tinting.
                     fill.setCardBackgroundColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.white));
@@ -264,7 +270,6 @@ public class ExpandingCircle extends View {
         speedTextView.setText(HtmlCompat.fromHtml(String.format("<b>Speed:</b> %.2f dp/s", speed), HtmlCompat.FROM_HTML_MODE_LEGACY));
         radiusTextView.setText(HtmlCompat.fromHtml(String.format("<b>Radius:</b> %.2f dp", radius), HtmlCompat.FROM_HTML_MODE_LEGACY));
         timeTextView.setText(HtmlCompat.fromHtml(String.format("<b>Time:</b> %.2f s", num_updates * update_interval), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        last_radius = radius;
     }
 
     @Override

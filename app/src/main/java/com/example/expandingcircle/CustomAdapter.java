@@ -90,23 +90,23 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         Throughput thp = throughputValues.get(position);
         textViewUsername.setText(HtmlCompat.fromHtml("<b>Username: </b>" + username.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewCode.setText(HtmlCompat.fromHtml("<b>Code: </b>" + code.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewA.setText(HtmlCompat.fromHtml("<b>A: </b>" + ((Float) thp.getA() + " dp"), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewA.setText(HtmlCompat.fromHtml("<b>A: </b>" + ((Float) thp.getA() + " px"), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewNodes.setText(HtmlCompat.fromHtml("<b>Number Of Targets: </b>" + nodes.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewAe.setText(HtmlCompat.fromHtml("<b>Ae: </b>" + thp.getAe() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewAe.setText(HtmlCompat.fromHtml("<b>Ae: </b>" + thp.getAe() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewErrorRate.setText(HtmlCompat.fromHtml("<b>Error Rate: </b>" + thp.getErrorRate() + "%", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewID.setText(HtmlCompat.fromHtml("<b>ID: </b>" + thp.getID() + " b", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewIDe.setText(HtmlCompat.fromHtml("<b>IDe: </b>" + thp.getIDe() + " b", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewMisses.setText(HtmlCompat.fromHtml("<b>Misses: </b>" + ((Integer) thp.getMisses()), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewMT.setText(HtmlCompat.fromHtml("<b>MT: </b>" + ((Float) thp.getMT() + " ms"), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewNumberOfTrials.setText(HtmlCompat.fromHtml("<b>Number Of Trials: </b>" + ((Integer) thp.getNumberOfTrials()), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewSDx.setText(HtmlCompat.fromHtml("<b>SDx: </b>" + thp.getSDx() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewSDx.setText(HtmlCompat.fromHtml("<b>SDx: </b>" + thp.getSDx() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewThroughput.setText(HtmlCompat.fromHtml("<b>Thp: </b>" + thp.getThroughput() + " b/ms", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewW.setText(HtmlCompat.fromHtml("<b>Avg. W: </b>" + thp.getW() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewWe.setText(HtmlCompat.fromHtml("<b>We: </b>" + thp.getWe() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewX.setText(HtmlCompat.fromHtml("<b>X: </b>" + thp.getX() + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewWMin.setText(HtmlCompat.fromHtml("<b>Min. W: </b>" + wMin.get(position) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewWMax.setText(HtmlCompat.fromHtml("<b>Max. W: </b>" + wMax.get(position) + " dp", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewSpeed.setText(HtmlCompat.fromHtml("<b>Speed: </b>" + speed.get(position) + " dp/s", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewW.setText(HtmlCompat.fromHtml("<b>Avg. W: </b>" + thp.getW() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewWe.setText(HtmlCompat.fromHtml("<b>We: </b>" + thp.getWe() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewX.setText(HtmlCompat.fromHtml("<b>X: </b>" + thp.getX() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewWMin.setText(HtmlCompat.fromHtml("<b>Min. W: </b>" + wMin.get(position) + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewWMax.setText(HtmlCompat.fromHtml("<b>Max. W: </b>" + wMax.get(position) + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewSpeed.setText(HtmlCompat.fromHtml("<b>Speed: </b>" + speed.get(position) + " px/s", HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
