@@ -51,12 +51,6 @@ public class CircleActivity extends AppCompatActivity {
             if (speed < 150) {
                 i.putExtra("speed", speed + level_up);
             } else {
-                mt.clear();
-                from.clear();
-                to.clear();
-                select.clear();
-                error.clear();
-                currentWidths.clear();
                 sendData();
                 finish();
                 onBackPressed();
@@ -102,6 +96,12 @@ public class CircleActivity extends AppCompatActivity {
         data.put("currentWidths", currentWidths);
         db.collection("tests")
                 .add(data);
+        mt.clear();
+        from.clear();
+        to.clear();
+        select.clear();
+        error.clear();
+        currentWidths.clear();
     }
 
     @Override
@@ -133,12 +133,6 @@ public class CircleActivity extends AppCompatActivity {
     private void processIntent(Intent i) {
         if (mt.size() == nodes) {
             sendData();
-            mt.clear();
-            from.clear();
-            to.clear();
-            select.clear();
-            error.clear();
-            currentWidths.clear();
         }
 
         if (i.hasExtra("username")) {
