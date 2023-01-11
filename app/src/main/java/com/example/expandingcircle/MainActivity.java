@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("username", username.getText().toString());
             i.putExtra("speed", 50.0);
             i.putExtra("level_up", 50.0);
-            i.putExtra("width", 100.0f);
+            i.putExtra("width", 200.0f);
             i.putExtra("nodes", 5);
             i.putExtra("start_node", 0);
             startActivity(i);
