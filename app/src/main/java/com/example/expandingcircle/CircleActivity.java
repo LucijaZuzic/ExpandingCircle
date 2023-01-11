@@ -51,6 +51,12 @@ public class CircleActivity extends AppCompatActivity {
             if (speed < 150) {
                 i.putExtra("speed", speed + level_up);
             } else {
+                mt.clear();
+                from.clear();
+                to.clear();
+                select.clear();
+                error.clear();
+                currentWidths.clear();
                 sendData();
                 finish();
                 onBackPressed();
