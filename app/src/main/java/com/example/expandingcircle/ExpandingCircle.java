@@ -180,7 +180,7 @@ public class ExpandingCircle extends View {
                     CircleActivity.to.add(new PointF((float) dest_centreX, (float) dest_centreY));
                     CircleActivity.select.add(selected);
                     CircleActivity.mt.add((float) (System.currentTimeMillis() - activity.startTime));
-                    CircleActivity.currentWidths.add((float) drag.getWidth());
+                    CircleActivity.currentWidths.add((float) parent.getWidth());
 
                     // Turns off any color tinting.
                     fill.setCardBackgroundColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.white));
