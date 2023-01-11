@@ -22,7 +22,7 @@ import androidx.core.text.HtmlCompat;
 public class ExpandingCircle extends View {
 
     private final double speed, update_interval, min_radius, max_radius, ring_radius, ring_edge_radius, curve;
-    private double radius;
+    private double currentRadius, radius;
     private boolean expand;
     private int num_updates, nodes, circleRadius;
     private final LinearLayout banner, bg;
@@ -169,8 +169,8 @@ public class ExpandingCircle extends View {
                     int[] dest = new int[2];
                     parent.getLocationInWindow(dest);
 
-                    double dest_centreX = dest[0] + parent.getWidth() / 2.0;
-                    double dest_centreY = dest[1] + parent.getHeight() / 2.0;
+                    double dest_centreX = dest[0] + currentRadius / 2.0;
+                    double dest_centreY = dest[1] + currentRadius / 2.0;
 
                     //CircleActivity.amplitude = (float) Math.sqrt(Math.pow(src_centreX - dest_centreX, 2) + Math.pow(src_centreY - dest_centreY, 2));
 
@@ -180,7 +180,7 @@ public class ExpandingCircle extends View {
                     CircleActivity.to.add(new PointF((float) dest_centreX, (float) dest_centreY));
                     CircleActivity.select.add(selected);
                     CircleActivity.mt.add((float) (System.currentTimeMillis() - activity.startTime));
-                    CircleActivity.currentWidths.add((float) parent.getWidth());
+                    CircleActivity.currentWidths.add((float) currentRadius);
 
                     // Turns off any color tinting.
                     fill.setCardBackgroundColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.white));
@@ -239,6 +239,7 @@ public class ExpandingCircle extends View {
         bg.setVisibility(View.VISIBLE);
 
         LinearLayout.LayoutParams bg_params = (LinearLayout.LayoutParams) bg.getLayoutParams();
+        currentRadius = radius;
         bg_params.width = (int) radius;
         bg_params.height = (int) radius;
         bg.setLayoutParams(bg_params);
