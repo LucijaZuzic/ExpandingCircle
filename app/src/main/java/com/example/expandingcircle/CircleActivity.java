@@ -32,9 +32,9 @@ public class CircleActivity extends AppCompatActivity {
     private int start_node = 0;
     private int end_node = 0;
     private String username;
-    private final float circleRadius = 560;
+    private final float circleRadius = 280;
     private float width = 100;
-    private final float maxWidth = 280;
+    private final float maxWidth = 140;
     public static float amplitude;
     public static List<Float> mt = new ArrayList<>();
     public static List<Float> currentWidths = new ArrayList<>();
