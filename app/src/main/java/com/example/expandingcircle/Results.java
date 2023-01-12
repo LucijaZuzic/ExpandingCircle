@@ -56,7 +56,7 @@ public class Results extends AppCompatActivity {
     private final Comparator<Throughput> widthCmp = Comparator.comparing(thp -> (Math.round(thp.getW())));
     private final Comparator<Throughput> finalCmp = speedCmp.thenComparing(nodesCmp).thenComparing(codeCmp).thenComparing(usernameCmp).thenComparing(widthCmp);
     private final Set<Throughput> throughputSelected = new TreeSet<>(finalCmp);
-    private CheckBox checkBoxNodesAndSpeed, checkBoxNodes, checkBoxSpeed;
+    private CheckBox checkBoxNodesAndSpeed, checkBoxNodes, checkBoxSpeed, checkBoxIncreasing;
     private NumberPicker numberOfTargetsNumberPicker, speedNumberPicker;
     private TextView noResults;
     private RecyclerView recyclerView;
@@ -65,6 +65,7 @@ public class Results extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+        checkBoxIncreasing = findViewById(R.id.checkBoxIncreasing);
         numberOfTargetsNumberPicker = findViewById(R.id.numberOfTargetsNumberPicker);
         numberOfTargetsNumberPicker.setMinValue(3);
         numberOfTargetsNumberPicker.setMaxValue(12);
@@ -203,6 +204,9 @@ public class Results extends AppCompatActivity {
                                                 toArray,
                                                 selectArray,
                                                 mtArray);
+                                        if (checkBoxIncreasing.isChecked() != expand) {
+                                            continue;
+                                        }
                                         if (checkBoxNodes.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
                                             if (!nodesToFind.equals(nodes)) {
                                                 continue;
@@ -317,6 +321,11 @@ public class Results extends AppCompatActivity {
         }
         if (checkBoxSpeed.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
             fileName += "_speed_" + speedToFind.toString();
+        }
+        if (checkBoxIncreasing.isChecked()) {
+            fileName += "_increasing";
+        } else {
+            fileName += "_decreasing";
         }
         fileName += ".csv";
 
