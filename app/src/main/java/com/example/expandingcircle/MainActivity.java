@@ -131,8 +131,12 @@ public class MainActivity extends AppCompatActivity {
                                     speed_array_map.put(speed_list,1);
                                 }
                             }
-                            List<Integer> nodes_list = (List<Integer>) data.get("node_array");
-                            if (nodes_list != null) {
+                            List<Long> long_nodes_list = (List<Long>) data.get("node_array");
+                            if (long_nodes_list != null) {
+                                List<Integer> nodes_list = new ArrayList<>();
+                                for (int i = 0; i < long_nodes_list.size(); i++) {
+                                    nodes_list.add(i, Math.toIntExact(long_nodes_list.get(i)));
+                                }
                                 if (node_array_map.containsKey(nodes_list)) {
                                     node_array_map.put(nodes_list,node_array_map.get(nodes_list) + 1);
                                 } else {
