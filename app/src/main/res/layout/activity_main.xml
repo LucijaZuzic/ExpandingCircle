@@ -24,11 +24,18 @@
         android:importantForAutofill="no" />
 
     <Button
-        android:id="@+id/start"
+        android:id="@+id/increasing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/start" />
+        android:text="@string/increasing" />
+
+    <Button
+        android:id="@+id/decreasing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/decreasing" />
 
     <Button
         android:id="@+id/results"

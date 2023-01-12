@@ -41,12 +41,14 @@ public class Results extends AppCompatActivity {
     private final List<Integer> widthMinList = new ArrayList<>();
     private final List<Integer> widthMaxList = new ArrayList<>();
     private final List<Integer> speedList = new ArrayList<>();
+    private final List<Boolean> expandList = new ArrayList<>();
     private final Map<Throughput, String> thpUsernames = new HashMap<>();
     private final Map<Throughput, String> thpCodes = new HashMap<>();
     private final Map<Throughput, Integer> thpNodes = new HashMap<>();
     private final Map<Throughput, Integer> thpWidthMin = new HashMap<>();
     private final Map<Throughput, Integer> thpWidthMax = new HashMap<>();
     private final Map<Throughput, Integer> thpSpeed = new HashMap<>();
+    private final Map<Throughput, Boolean> thpExpand = new HashMap<>();
     private final Comparator<Throughput> nodesCmp = Comparator.comparing(thpNodes::get);
     private final Comparator<Throughput> speedCmp = Comparator.comparing(thpSpeed::get);
     private final Comparator<Throughput> codeCmp = Comparator.comparing(thpCodes::get);
@@ -148,6 +150,7 @@ public class Results extends AppCompatActivity {
         thpWidthMin.clear();
         thpWidthMax.clear();
         thpSpeed.clear();
+        thpExpand.clear();
 
         usernameList.clear();
         codeList.clear();
@@ -155,6 +158,7 @@ public class Results extends AppCompatActivity {
         widthMinList.clear();
         widthMaxList.clear();
         speedList.clear();
+        expandList.clear();
 
         db.collection("tests")
                 .get()
@@ -165,12 +169,13 @@ public class Results extends AppCompatActivity {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Map<String, Object> data = document.getData();
                                     Integer nodes = Integer.parseInt(Objects.requireNonNull(data.get("nodes")).toString().split("/[,.\\s]/")[0]);
-                                    Integer widthMin = ((Float) Float.parseFloat(Objects.requireNonNull(data.get("width")).toString().split("/[,.\\s]/")[0])).intValue();
+                                    Integer widthMin = ((Float) Float.parseFloat(Objects.requireNonNull(data.get("minWidth")).toString().split("/[,.\\s]/")[0])).intValue();
                                     Integer widthMax = ((Float) Float.parseFloat(Objects.requireNonNull(data.get("maxWidth")).toString().split("/[,.\\s]/")[0])).intValue();
                                     Integer speed = ((Float) Float.parseFloat(Objects.requireNonNull(data.get("speed")).toString().split("/[,.\\s]/")[0])).intValue();
                                     String code = Objects.requireNonNull(data.get("code")).toString();
                                     String username = Objects.requireNonNull(data.get("username")).toString();
                                     float amplitude = Float.parseFloat(Objects.requireNonNull(data.get("amplitude")).toString());
+                                    Boolean expand = (Boolean) Objects.requireNonNull(data.get("expand"));
                                     List<Double> widths = (List<Double>) data.get("currentWidths");
                                     List<HashMap> from = (List<HashMap>) data.get("from");
                                     List<HashMap> to = (List<HashMap>) data.get("to");
@@ -214,6 +219,7 @@ public class Results extends AppCompatActivity {
                                         thpWidthMin.put(thp, widthMin);
                                         thpWidthMax.put(thp, widthMax);
                                         thpSpeed.put(thp, speed);
+                                        thpExpand.put(thp, expand);
                                         throughputSelected.add(thp);
                                     }
                                 }
@@ -240,7 +246,8 @@ public class Results extends AppCompatActivity {
                                 "SDx",
                                 "Min. W",
                                 "Max. W",
-                                "Speed"});
+                                "Speed",
+                                "Expand"});
                         for (Throughput thp : throughputSelected) {
                             data.add(new String[] {
                                     thpUsernames.get(thp),
@@ -261,7 +268,8 @@ public class Results extends AppCompatActivity {
                                     ((Float) thp.getSDx()).toString(),
                                     ((Integer) thpWidthMin.get(thp)).toString(),
                                     ((Integer) thpWidthMax.get(thp)).toString(),
-                                    ((Integer) thpSpeed.get(thp)).toString()});
+                                    ((Integer) thpSpeed.get(thp)).toString(),
+                                    ((Boolean) thpExpand.get(thp)).toString()});
                             throughputValues.add(thp);
                             usernameList.add(thpUsernames.get(thp));
                             codeList.add(thpCodes.get(thp));
@@ -269,11 +277,12 @@ public class Results extends AppCompatActivity {
                             widthMinList.add(thpWidthMin.get(thp));
                             widthMaxList.add(thpWidthMax.get(thp));
                             speedList.add(thpSpeed.get(thp));
+                            expandList.add(thpExpand.get(thp));
                         }
                         if (saveEnable) {
                             saveFile(data);
                         }
-                        CustomAdapter customAdapter = new CustomAdapter(throughputValues, nodesList, usernameList, codeList, widthMinList, widthMaxList, speedList);
+                        CustomAdapter customAdapter = new CustomAdapter(expandList, throughputValues, nodesList, usernameList, codeList, widthMinList, widthMaxList, speedList);
                         recyclerView.setAdapter(customAdapter);
                         if (Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() != 0) {
                             recyclerView.setVisibility(View.VISIBLE);

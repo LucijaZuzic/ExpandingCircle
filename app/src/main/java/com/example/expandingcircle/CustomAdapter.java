@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+    private final List<Boolean> expand;
     private final List<Throughput> throughputValues;
     private final List<String> username;
     private final List<String> code;
@@ -20,8 +21,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     private final List<Integer> wMax;
     private final List<Integer> speed;
 
-    public CustomAdapter(List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
+    public CustomAdapter(List<Boolean> expand, List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
         this.throughputValues = throughputValues;
+        this.expand = expand;
         this.username = username;
         this.code = code;
         this.nodes = nodes;
@@ -67,7 +69,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewX,
                 textViewWMin,
                 textViewWMax,
-                textViewSpeed;
+                textViewSpeed,
+                textViewExpand;
         textViewUsername = viewHolder.getTextViewUsername();
         textViewCode = viewHolder.getTextViewCode();
         textViewA = viewHolder.getTextViewA();
@@ -87,6 +90,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewWMin = viewHolder.getTextViewWMin();
         textViewWMax = viewHolder.getTextViewWMax();
         textViewSpeed = viewHolder.getTextViewSpeed();
+        textViewExpand = viewHolder.getTextViewExpand();
         Throughput thp = throughputValues.get(position);
         textViewUsername.setText(HtmlCompat.fromHtml("<b>Username: </b>" + username.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewCode.setText(HtmlCompat.fromHtml("<b>Code: </b>" + code.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
@@ -107,6 +111,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewWMin.setText(HtmlCompat.fromHtml("<b>Min. W: </b>" + wMin.get(position) + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewWMax.setText(HtmlCompat.fromHtml("<b>Max. W: </b>" + wMax.get(position) + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewSpeed.setText(HtmlCompat.fromHtml("<b>Speed: </b>" + speed.get(position) + " px/s", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewExpand.setText(HtmlCompat.fromHtml("<b>Expand: </b>" + expand.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -139,7 +144,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewX,
                 textViewWMin,
                 textViewWMax,
-                textViewSpeed;
+                textViewSpeed,
+                textViewExpand;
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
@@ -163,6 +169,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             textViewWMin = view.findViewById(R.id.textViewWMin);
             textViewWMax = view.findViewById(R.id.textViewWMax);
             textViewSpeed = view.findViewById(R.id.textViewSpeed);
+            textViewExpand = view.findViewById(R.id.textViewExpand);
         }
 
         public TextView getTextViewUsername() {
@@ -222,7 +229,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         public TextView getTextViewSpeed() {
             return textViewSpeed;
         }
-        
+        public TextView getTextViewExpand() {
+            return textViewExpand;
+        }
         
     }
 }

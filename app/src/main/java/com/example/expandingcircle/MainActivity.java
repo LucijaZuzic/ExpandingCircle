@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EditText username = findViewById(R.id.username);
-        Button start = findViewById(R.id.start);
+        Button start = findViewById(R.id.increasing);
         start.setOnClickListener((e) -> {
             Intent i = new Intent(this.getApplicationContext(), CircleActivity.class);
             i.putExtra("username", username.getText().toString());
@@ -24,6 +24,19 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("width", 100.0f);
             i.putExtra("nodes", 5);
             i.putExtra("start_node", 0);
+            i.putExtra("expand", true);
+            startActivity(i);
+        });
+        Button reverse = findViewById(R.id.decreasing);
+        reverse.setOnClickListener((e) -> {
+            Intent i = new Intent(this.getApplicationContext(), CircleActivity.class);
+            i.putExtra("username", username.getText().toString());
+            i.putExtra("speed", 50.0);
+            i.putExtra("level_up", 50.0);
+            i.putExtra("width", 140.0f);
+            i.putExtra("nodes", 5);
+            i.putExtra("start_node", 0);
+            i.putExtra("expand", false);
             startActivity(i);
         });
         Button results = findViewById(R.id.results);

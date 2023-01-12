@@ -27,6 +27,7 @@ public class CircleActivity extends AppCompatActivity {
     public FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FloatingActionButton drag, center;
     private double level_up = 50, speed = 50;
+    private boolean expand;
     public long startTime;
     private int nodes = 5;
     private int start_node = 0;
@@ -34,6 +35,7 @@ public class CircleActivity extends AppCompatActivity {
     private String username;
     private final float circleRadius = 280;
     private float width = 100;
+    private final float minWidth = 100;
     private final float maxWidth = 140;
     public static float amplitude;
     public static List<Float> mt = new ArrayList<>();
@@ -87,7 +89,8 @@ public class CircleActivity extends AppCompatActivity {
         data.put("code", mId);
         data.put("username", username);
         data.put("amplitude", amplitude);
-        data.put("width", width);
+        data.put("minWidth", minWidth);
+        data.put("expand", expand);
         data.put("from", from);
         data.put("to", to);
         data.put("select", select);
@@ -135,6 +138,9 @@ public class CircleActivity extends AppCompatActivity {
             sendData();
         }
 
+        if (i.hasExtra("expand")) {
+            expand = (boolean) i.getExtras().get("expand");
+        }
         if (i.hasExtra("username")) {
             username = (String) i.getExtras().get("username");
         }
@@ -188,7 +194,7 @@ public class CircleActivity extends AppCompatActivity {
             ec.stop();
         }
 
-        ec = new ExpandingCircle(this, (int) circleRadius, nodes, drag, parent, banner, speedTextView, radiusTextView, timeTextView, speed, 0.01, width, width, maxWidth, 10, 10, 0.5, true);
+        ec = new ExpandingCircle(this, (int) circleRadius, nodes, drag, parent, banner, speedTextView, radiusTextView, timeTextView, speed, 0.01, width, minWidth, maxWidth, 10, 10, 0.5, expand);
 
         drag.setOnLongClickListener( v -> {
             startTime = System.currentTimeMillis();

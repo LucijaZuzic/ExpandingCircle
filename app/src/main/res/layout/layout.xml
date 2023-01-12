@@ -231,6 +231,14 @@
             android:layout_height="24dp"
             android:layout_weight="1" />
 
+        <TextView
+            android:id="@+id/textViewExpand"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <View
