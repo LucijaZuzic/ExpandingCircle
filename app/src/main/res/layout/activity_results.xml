@@ -99,13 +99,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/number_of_targets_and_speed" />
 
-            <CheckBox
-                android:id="@+id/checkBoxIncreasing"
-                android:textSize="21sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/increasing" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -158,7 +151,6 @@
                 android:id="@+id/speedNumberPicker"
                 android:layout_width="0dp"
                 android:descendantFocusability="blocksDescendants"
-                android:layout_marginStart="10dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 

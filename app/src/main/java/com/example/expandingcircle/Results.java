@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -16,13 +14,9 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.opencsv.CSVWriter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -42,6 +36,9 @@ public class Results extends AppCompatActivity {
     private final List<Integer> widthMaxList = new ArrayList<>();
     private final List<Integer> speedList = new ArrayList<>();
     private final List<Boolean> expandList = new ArrayList<>();
+    private final List<Integer> errorList = new ArrayList<>();
+    private final List<List<Double>> speedsArrayList = new ArrayList<>();
+    private final List<List<Integer>> nodesArrayList = new ArrayList<>();
     private final Map<Throughput, String> thpUsernames = new HashMap<>();
     private final Map<Throughput, String> thpCodes = new HashMap<>();
     private final Map<Throughput, Integer> thpNodes = new HashMap<>();
@@ -49,6 +46,9 @@ public class Results extends AppCompatActivity {
     private final Map<Throughput, Integer> thpWidthMax = new HashMap<>();
     private final Map<Throughput, Integer> thpSpeed = new HashMap<>();
     private final Map<Throughput, Boolean> thpExpand = new HashMap<>();
+    private final Map<Throughput, Integer> thpOtherError = new HashMap<>();
+    private final Map<Throughput, List<Integer>> thpNodesArray = new HashMap<>();
+    private final Map<Throughput, List<Double>> thpSpeedsArray = new HashMap<>();
     private final Comparator<Throughput> nodesCmp = Comparator.comparing(thpNodes::get);
     private final Comparator<Throughput> speedCmp = Comparator.comparing(thpSpeed::get);
     private final Comparator<Throughput> codeCmp = Comparator.comparing(thpCodes::get);
@@ -56,7 +56,7 @@ public class Results extends AppCompatActivity {
     private final Comparator<Throughput> widthCmp = Comparator.comparing(thp -> (Math.round(thp.getW())));
     private final Comparator<Throughput> finalCmp = speedCmp.thenComparing(nodesCmp).thenComparing(codeCmp).thenComparing(usernameCmp).thenComparing(widthCmp);
     private final Set<Throughput> throughputSelected = new TreeSet<>(finalCmp);
-    private CheckBox checkBoxNodesAndSpeed, checkBoxNodes, checkBoxSpeed, checkBoxIncreasing;
+    private CheckBox checkBoxNodesAndSpeed, checkBoxNodes, checkBoxSpeed;
     private NumberPicker numberOfTargetsNumberPicker, speedNumberPicker;
     private TextView noResults;
     private RecyclerView recyclerView;
@@ -65,7 +65,6 @@ public class Results extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        checkBoxIncreasing = findViewById(R.id.checkBoxIncreasing);
         numberOfTargetsNumberPicker = findViewById(R.id.numberOfTargetsNumberPicker);
         numberOfTargetsNumberPicker.setMinValue(3);
         numberOfTargetsNumberPicker.setMaxValue(12);
@@ -78,7 +77,7 @@ public class Results extends AppCompatActivity {
         speedNumberPicker.setMinValue(1);
         speedNumberPicker.setMaxValue(3);
         NumberPicker.Formatter formatter2 = value -> {
-            int temp = value * 50;
+            int temp = (value - 1) * 100 + 50;
             return "" + temp + " px/s";
         };
         speedNumberPicker.setFormatter(formatter2);
@@ -140,7 +139,7 @@ public class Results extends AppCompatActivity {
 
     public void get(boolean saveEnable) {
         Integer nodesToFind = numberOfTargetsNumberPicker.getValue() * 2 - 1;
-        Integer speedToFind = speedNumberPicker.getValue() * 50;
+        Integer speedToFind = (speedNumberPicker.getValue() - 1) * 100 + 50;
 
         throughputValues.clear();
         throughputSelected.clear();
@@ -152,6 +151,9 @@ public class Results extends AppCompatActivity {
         thpWidthMax.clear();
         thpSpeed.clear();
         thpExpand.clear();
+        thpNodesArray.clear();
+        thpSpeedsArray.clear();
+        thpOtherError.clear();
 
         usernameList.clear();
         codeList.clear();
@@ -160,6 +162,9 @@ public class Results extends AppCompatActivity {
         widthMaxList.clear();
         speedList.clear();
         expandList.clear();
+        nodesArrayList.clear();
+        speedsArrayList.clear();
+        errorList.clear();
 
         db.collection("tests")
                 .get()
@@ -177,7 +182,16 @@ public class Results extends AppCompatActivity {
                                     String username = Objects.requireNonNull(data.get("username")).toString();
                                     float amplitude = Float.parseFloat(Objects.requireNonNull(data.get("amplitude")).toString());
                                     Boolean expand = (Boolean) Objects.requireNonNull(data.get("expand"));
-                                    List<Double> widths = (List<Double>) data.get("currentWidths");
+                                    List<Integer> nodes_list =  Objects.requireNonNull((List<Integer>) data.get("node_array"));
+                                    List<Double> speed_list =  Objects.requireNonNull((List<Double>) data.get("speed_array"));
+                                    List<Double> widths =  Objects.requireNonNull((List<Double>) data.get("currentWidths"));
+                                    List<Boolean> errors = Objects.requireNonNull((List<Boolean>) data.get("error"));
+                                    int num_error = 0;
+                                    for (Boolean b: errors) {
+                                        if (b) {
+                                            num_error++;
+                                        }
+                                    }
                                     List<HashMap> from = (List<HashMap>) data.get("from");
                                     List<HashMap> to = (List<HashMap>) data.get("to");
                                     List<HashMap> select = (List<HashMap>) data.get("select");
@@ -198,15 +212,12 @@ public class Results extends AppCompatActivity {
                                         Throughput thp = new Throughput(code,
                                                 amplitude,
                                                 mean(widths),
-                                                Throughput.ONE_DIMENSIONAL,
+                                                Throughput.TWO_DIMENSIONAL,
                                                 Throughput.DISCRETE,
                                                 fromArray,
                                                 toArray,
                                                 selectArray,
                                                 mtArray);
-                                        if (checkBoxIncreasing.isChecked() != expand) {
-                                            continue;
-                                        }
                                         if (checkBoxNodes.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
                                             if (!nodesToFind.equals(nodes)) {
                                                 continue;
@@ -224,6 +235,9 @@ public class Results extends AppCompatActivity {
                                         thpWidthMax.put(thp, widthMax);
                                         thpSpeed.put(thp, speed);
                                         thpExpand.put(thp, expand);
+                                        thpNodesArray.put(thp, nodes_list);
+                                        thpSpeedsArray.put(thp, speed_list);
+                                        thpOtherError.put(thp, num_error);
                                         throughputSelected.add(thp);
                                     }
                                 }
@@ -251,13 +265,17 @@ public class Results extends AppCompatActivity {
                                 "Min. W",
                                 "Max. W",
                                 "Speed",
-                                "Expand"});
+                                "Expand",
+                                "Drop Error Rate",
+                                "Drop Misses",
+                                "Speed List",
+                                "Nodes List"});
                         for (Throughput thp : throughputSelected) {
                             data.add(new String[] {
                                     thpUsernames.get(thp),
                                     thpCodes.get(thp),
                                     ((Float) thp.getThroughput()).toString(),
-                                    ((Integer) thpNodes.get(thp)).toString(),
+                                    thpNodes.get(thp).toString(),
                                     ((Float) thp.getA()).toString(),
                                     ((Float) thp.getAe()).toString(),
                                     ((Float) thp.getW()).toString(),
@@ -270,10 +288,14 @@ public class Results extends AppCompatActivity {
                                     ((Float) thp.getIDe()).toString(),
                                     ((Float) thp.getX()).toString(),
                                     ((Float) thp.getSDx()).toString(),
-                                    ((Integer) thpWidthMin.get(thp)).toString(),
-                                    ((Integer) thpWidthMax.get(thp)).toString(),
-                                    ((Integer) thpSpeed.get(thp)).toString(),
-                                    ((Boolean) thpExpand.get(thp)).toString()});
+                                    thpWidthMin.get(thp).toString(),
+                                    thpWidthMax.get(thp).toString(),
+                                    thpSpeed.get(thp).toString(),
+                                    thpExpand.get(thp).toString(),
+                                    ((Float) ((float) thpOtherError.get(thp) / thpNodes.get(thp) * 100.0f)).toString(),
+                                    thpOtherError.get(thp).toString(),
+                                    thpSpeedsArray.get(thp).toString(),
+                                    thpNodesArray.get(thp).toString()});
                             throughputValues.add(thp);
                             usernameList.add(thpUsernames.get(thp));
                             codeList.add(thpCodes.get(thp));
@@ -282,11 +304,14 @@ public class Results extends AppCompatActivity {
                             widthMaxList.add(thpWidthMax.get(thp));
                             speedList.add(thpSpeed.get(thp));
                             expandList.add(thpExpand.get(thp));
+                            nodesArrayList.add(thpNodesArray.get(thp));
+                            speedsArrayList.add(thpSpeedsArray.get(thp));
+                            errorList.add(thpOtherError.get(thp));
                         }
                         if (saveEnable) {
                             saveFile(data);
                         }
-                        CustomAdapter customAdapter = new CustomAdapter(expandList, throughputValues, nodesList, usernameList, codeList, widthMinList, widthMaxList, speedList);
+                        CustomAdapter customAdapter = new CustomAdapter(nodesArrayList, speedsArrayList, errorList, expandList, throughputValues, nodesList, usernameList, codeList, widthMinList, widthMaxList, speedList);
                         recyclerView.setAdapter(customAdapter);
                         if (Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() != 0) {
                             recyclerView.setVisibility(View.VISIBLE);
@@ -322,11 +347,6 @@ public class Results extends AppCompatActivity {
         if (checkBoxSpeed.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
             fileName += "_speed_" + speedToFind.toString();
         }
-        if (checkBoxIncreasing.isChecked()) {
-            fileName += "_increasing";
-        } else {
-            fileName += "_decreasing";
-        }
         fileName += ".csv";
 
         Intent i = new Intent(Intent.ACTION_SEND);
@@ -339,63 +359,5 @@ public class Results extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
-        /*
-        Integer nodesToFind = numberOfTargetsNumberPicker.getValue() * 2 - 1;
-        Integer speedToFind = speedNumberPicker.getValue() * 50;
-        // String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("ExpandingCircle", Context.MODE_PRIVATE);
-        String baseDir = directory.getAbsolutePath();
-        String fileName = "ExpandingCircle";
-        if (checkBoxNodes.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
-            fileName += "_nodes_" + nodesToFind.toString();
-        }
-        if (checkBoxSpeed.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
-            fileName += "_speed_" + speedToFind.toString();
-        }
-        fileName += ".csv";
-        String filePath = baseDir + File.separator + fileName;
-        File f = new File(filePath);
-        CSVWriter writer;
-        TextView error = findViewById(R.id.error);
-
-        // File exist
-        if(f.exists()&&!f.isDirectory())
-        {
-            FileWriter mFileWriter = null;
-            try {
-                mFileWriter = new FileWriter(filePath, true);
-                writer = new CSVWriter(mFileWriter);
-                writer.writeAll(data);
-                Toast.makeText(this, filePath, Toast.LENGTH_SHORT).show();
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    Toast.makeText(this,  "1 " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                Toast.makeText(this, "2 " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-        }
-        else
-        {
-            try {
-                writer = new CSVWriter(new FileWriter(filePath));
-                writer.writeAll(data);
-                Toast.makeText(this, filePath, Toast.LENGTH_SHORT).show();
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    Toast.makeText(this, "3 " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                error.setText(e.getMessage());
-                Toast.makeText(this, "4 " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-        }*/
     }
 }

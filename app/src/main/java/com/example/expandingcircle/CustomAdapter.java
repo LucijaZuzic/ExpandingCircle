@@ -9,7 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     private final List<Boolean> expand;
@@ -20,9 +24,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     private final List<Integer> wMin;
     private final List<Integer> wMax;
     private final List<Integer> speed;
+    private final List<Integer> dropMisses;
+    private final List<List<Double>> speedsArrays;
+    private final List<List<Integer>> nodesArrays;
 
-    public CustomAdapter(List<Boolean> expand, List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
+    public CustomAdapter(List<List<Integer>> nodesArrays, List<List<Double>> speedsArrays ,List<Integer> dropMisses, List<Boolean> expand, List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
         this.throughputValues = throughputValues;
+        this.speedsArrays = speedsArrays;
+        this.nodesArrays = nodesArrays;
+        this.dropMisses = dropMisses;
         this.expand = expand;
         this.username = username;
         this.code = code;
@@ -70,7 +80,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewWMin,
                 textViewWMax,
                 textViewSpeed,
-                textViewExpand;
+                textViewExpand,
+                textViewNodesArray,
+                textViewSpeedsArray,
+                textViewDropErrorRate,
+                textViewDropMisses;
         textViewUsername = viewHolder.getTextViewUsername();
         textViewCode = viewHolder.getTextViewCode();
         textViewA = viewHolder.getTextViewA();
@@ -87,6 +101,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewW = viewHolder.getTextViewW();
         textViewWe = viewHolder.getTextViewWe();
         textViewX = viewHolder.getTextViewX();
+        textViewNodesArray = viewHolder.getTextViewNodesArray();
+        textViewSpeedsArray = viewHolder.getTextViewSpeedsArray();
+        textViewDropErrorRate = viewHolder.getTextViewDropErrorRate();
+        textViewDropMisses = viewHolder.getTextViewDropMisses();
         textViewWMin = viewHolder.getTextViewWMin();
         textViewWMax = viewHolder.getTextViewWMax();
         textViewSpeed = viewHolder.getTextViewSpeed();
@@ -112,6 +130,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewWMax.setText(HtmlCompat.fromHtml("<b>Max. W: </b>" + wMax.get(position) + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewSpeed.setText(HtmlCompat.fromHtml("<b>Speed: </b>" + speed.get(position) + " px/s", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewExpand.setText(HtmlCompat.fromHtml("<b>Expand: </b>" + expand.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewNodesArray.setText(HtmlCompat.fromHtml("<b>Nodes List: </b>" + nodesArrays.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewSpeedsArray.setText(HtmlCompat.fromHtml("<b>Speed List: </b>" + speedsArrays.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        DecimalFormat df = new DecimalFormat("#,#####0.00000");
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        String newError = df.format((float) dropMisses.get(position) / nodes.get(position) * 100.0f);
+        textViewDropErrorRate.setText(HtmlCompat.fromHtml("<b>Drop Error Rate: </b>" + newError + "%", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewDropMisses.setText(HtmlCompat.fromHtml("<b>Drop Misses: </b>" + dropMisses.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -145,7 +171,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewWMin,
                 textViewWMax,
                 textViewSpeed,
-                textViewExpand;
+                textViewExpand,
+                textViewNodesArray,
+                textViewSpeedsArray,
+                textViewDropErrorRate,
+                textViewDropMisses;
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
@@ -170,6 +200,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             textViewWMax = view.findViewById(R.id.textViewWMax);
             textViewSpeed = view.findViewById(R.id.textViewSpeed);
             textViewExpand = view.findViewById(R.id.textViewExpand);
+            textViewNodesArray = view.findViewById(R.id.textViewNodesArray);
+            textViewSpeedsArray = view.findViewById(R.id.textViewSpeedsArray);
+            textViewDropErrorRate = view.findViewById(R.id.textViewDropErrorRate);
+            textViewDropMisses = view.findViewById(R.id.textViewDropMisses);
         }
 
         public TextView getTextViewUsername() {
@@ -231,6 +265,18 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         }
         public TextView getTextViewExpand() {
             return textViewExpand;
+        }
+        public TextView getTextViewNodesArray() {
+            return textViewNodesArray;
+        }
+        public TextView getTextViewSpeedsArray() {
+            return textViewSpeedsArray;
+        }
+        public TextView getTextViewDropErrorRate() {
+            return textViewDropErrorRate;
+        }
+        public TextView getTextViewDropMisses() {
+            return textViewDropMisses;
         }
         
     }

@@ -1,7 +1,10 @@
 package com.example.expandingcircle;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -9,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,12 +28,14 @@ public class CircleActivity extends AppCompatActivity {
     private ExpandingCircle ec;
     public FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FloatingActionButton drag, center;
-    private double level_up = 50, speed = 50;
+    private double speed = 50;
     private boolean expand;
     public long startTime;
     private int nodes = 5;
     private int start_node = 0;
     private int end_node = 0;
+    private int speed_index = 0;
+    private int nodes_index = 0;
     private String username;
     private final float circleRadius = 280;
     private float width = 100;
@@ -49,9 +53,9 @@ public class CircleActivity extends AppCompatActivity {
 
     public void nextLevel() {
         Intent i = new Intent(this.getApplicationContext(), CircleActivity.class);
-        if (end_node == 0 && nodes == 23) {
-            if (speed < 150) {
-                i.putExtra("speed", speed + level_up);
+        if (end_node == 0 && nodes_index == MainActivity.node_array.length - 1) {
+            if (speed_index != MainActivity.speed_array.length - 1) {
+                i.putExtra("speed_index", speed_index + 1);
             } else {
                 sendData();
                 finish();
@@ -59,21 +63,21 @@ public class CircleActivity extends AppCompatActivity {
                 return;
             }
         } else {
-            i.putExtra("speed", speed);
+            i.putExtra("speed_index", speed_index);
         }
         i.putExtra("username", username);
         i.putExtra("width", width);
-        i.putExtra("level_up", level_up);
         if (end_node == 0) {
-            if (nodes == 23) {
-                i.putExtra("nodes", 5);
+            if (nodes_index == MainActivity.node_array.length - 1) {
+                i.putExtra("nodes_index", 0);
             } else {
-                i.putExtra("nodes", nodes + 2);
+                i.putExtra("nodes_index", nodes_index + 1);
             }
         } else {
-            i.putExtra("nodes", nodes);
+            i.putExtra("nodes_index", nodes_index);
         }
         i.putExtra("start_node", end_node);
+        i.putExtra("expand", expand);
         startActivity(i);
     }
 
@@ -97,6 +101,16 @@ public class CircleActivity extends AppCompatActivity {
         data.put("mt", mt);
         data.put("error", error);
         data.put("currentWidths", currentWidths);
+        List<Integer> myNodes = new ArrayList<>();
+        List<Double> mySpeeds = new ArrayList<>();
+        for (int i = 0; i < MainActivity.node_array.length; i++) {
+            myNodes.add(MainActivity.node_array[i]);
+        }
+        for (int i = 0; i < MainActivity.speed_array.length; i++) {
+            mySpeeds.add(MainActivity.speed_array[i]);
+        }
+        data.put("node_array", myNodes);
+        data.put("speed_array", mySpeeds);
         db.collection("tests")
                 .add(data);
         mt.clear();
@@ -134,6 +148,14 @@ public class CircleActivity extends AppCompatActivity {
     }
 
     private void processIntent(Intent i) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        if (activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
+            finish();
+            onBackPressed();
+        }
+
         if (mt.size() == nodes) {
             sendData();
         }
@@ -147,15 +169,14 @@ public class CircleActivity extends AppCompatActivity {
         if (i.hasExtra("width")) {
             width = i.getExtras().getFloat("width");
         }
-        if (i.hasExtra("speed")) {
-            speed = i.getExtras().getDouble("speed");
+        if (i.hasExtra("speed_index")) {
+            speed_index = i.getExtras().getInt("speed_index");
         }
-        if (i.hasExtra("level_up")) {
-            level_up = i.getExtras().getDouble("level_up");
+        speed = MainActivity.speed_array[speed_index];
+        if (i.hasExtra("nodes_index")) {
+            nodes_index = i.getExtras().getInt("nodes_index");
         }
-        if (i.hasExtra("nodes")) {
-            nodes = i.getExtras().getInt("nodes");
-        }
+        nodes = MainActivity.node_array[nodes_index];
         if (i.hasExtra("start_node")) {
             start_node = i.getExtras().getInt("start_node");
         }

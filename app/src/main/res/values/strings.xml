@@ -9,11 +9,8 @@
     <string name="search">Search</string>
     <string name="number_of_targets_and_W"><![CDATA[Num. Targets & W]]></string>
     <string name="no_results">No results</string>
-    <string name="back">BACK</string>
+    <string name="back">Back</string>
     <string name="speed">Speed</string>
     <string name="number_of_targets_and_speed"><![CDATA[Num. targets & speed]]></string>
     <string name="save">Save</string>
-    <string name="reverse">Reverse</string>
-    <string name="increasing">Increasing</string>
-    <string name="decreasing">Decreasing</string>
 </resources>
