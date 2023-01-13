@@ -402,6 +402,43 @@ public class MyEntry {
                 });
     }
 
+    public static void afterFileCheckFetchDeleteUsername(Results results, String username) {
+        Gson gson = new GsonBuilder().create();
+        String JSONString = read(results.getApplicationContext(), "storage.json");
+        MyEntrySet fromDB = new MyEntrySet();
+        MyEntrySet myEntrySet = gson.fromJson(JSONString, MyEntrySet.class);
+        MyEntrySet myEntrySetNew = new MyEntrySet();
+        for (MyEntry myFileEntry: myEntrySet.getMyEntrySet()) {
+            if (!myFileEntry.username.equals(username)) {
+                myEntrySetNew.add(myFileEntry);
+            }
+        }
+        db.collection("tests")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().size() > 0) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.get("username").equals(username)) {
+                                    db.collection("tests").document(document.getId())
+                                            .delete();
+                                } else {
+                                    fromDB.add(new MyEntry(document.getData()));
+                                }
+                            }
+                            storeToFile(results.getApplicationContext(), myEntrySetNew, fromDB);
+                            fetchAndGet(results, false);
+                        } else {
+                            storeToFile(results.getApplicationContext(), myEntrySetNew, fromDB);
+                            fetchAndGet(results, false);
+                        }
+                    } else {
+                        storeToFile(results.getApplicationContext(), myEntrySetNew, fromDB);
+                        fetchAndGet(results, false);
+                    }
+                });
+    }
+
     public static void fetchAndSend(Context context, MyEntry entryAdd) {
         boolean isFilePresent = isFilePresent(context, "storage.json");
         if (isFilePresent) {
@@ -452,6 +489,20 @@ public class MyEntry {
             boolean isFileCreated = create(context, "storage.json", "{}");
             if(isFileCreated) {
                 afterFileCheckFetchDeleteUsername(context, username);
+            } else {
+                //show error or try again.
+            }
+        }
+    }
+
+    public static void deleteUsername(Results results, String username) {
+        boolean isFilePresent = isFilePresent(results.getApplicationContext(), "storage.json");
+        if (isFilePresent) {
+            afterFileCheckFetchDeleteUsername(results, username);
+        } else {
+            boolean isFileCreated = create(results.getApplicationContext(), "storage.json", "{}");
+            if(isFileCreated) {
+                afterFileCheckFetchDeleteUsername(results, username);
             } else {
                 //show error or try again.
             }
