@@ -80,7 +80,6 @@ public class Results extends AppCompatActivity {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     MyEntry.deleteUsername(context, username.getText().toString());
-                    fetchAndGet(results, false);
 
                 case DialogInterface.BUTTON_NEGATIVE:
                     //No button clicked
@@ -213,7 +212,7 @@ public class Results extends AppCompatActivity {
             }
             List<PointF> from = entry.from;
             List<PointF> to = entry.to;
-            List<PointF> select = entry.from;
+            List<PointF> select = entry.select;
             List<Float> mt = entry.mt;
             if (from != null && to != null && select != null && widths != null && mt != null) {
                 PointF[] fromArray = new PointF[widths.size()];
