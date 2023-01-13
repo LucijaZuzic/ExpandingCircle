@@ -13,11 +13,12 @@
         android:layout_height="wrap_content"
         android:textSize="21sp"
         android:textStyle="bold"
-        android:hint="@string/username" />
+        android:text="@string/username" />
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="@string/enter_username"
@@ -36,4 +37,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/results" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/send" />
+
+    <Button
+        android:id="@+id/delete_local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/delete_local" />
+
+    <Button
+        android:id="@+id/delete_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/delete_username" />
+
 </LinearLayout>

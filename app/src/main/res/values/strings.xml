@@ -13,4 +13,13 @@
     <string name="speed">Speed</string>
     <string name="number_of_targets_and_speed"><![CDATA[Num. targets & speed]]></string>
     <string name="save">Save</string>
+    <string name="send">Send</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete">Delete</string>
+    <string name="delete_local">Delete local</string>
+    <string name="delete_username">Delete username</string>
+    <string name="delete_local_dialog">Delete all local entries?</string>
+    <string name="delete_username_dialog">Delete username?</string>
+    <string name="delete_entry_dialog">Delete entry?</string>
 </resources>

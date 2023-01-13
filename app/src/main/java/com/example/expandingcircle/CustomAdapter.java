@@ -1,11 +1,15 @@
 package com.example.expandingcircle;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +21,7 @@ import java.util.Locale;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     private final List<Boolean> expand;
+    private final List<MyEntry> data;
     private final List<Throughput> throughputValues;
     private final List<String> username;
     private final List<String> code;
@@ -28,7 +33,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     private final List<List<Double>> speedsArrays;
     private final List<List<Integer>> nodesArrays;
 
-    public CustomAdapter(List<List<Integer>> nodesArrays, List<List<Double>> speedsArrays ,List<Integer> dropMisses, List<Boolean> expand, List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
+    public CustomAdapter(List<MyEntry> data, List<List<Integer>> nodesArrays, List<List<Double>> speedsArrays ,List<Integer> dropMisses, List<Boolean> expand, List<Throughput> throughputValues, List<Integer> nodes, List<String> username, List<String> code, List<Integer> wMin, List<Integer> wMax, List<Integer> speed) {
+        this.data = data;
         this.throughputValues = throughputValues;
         this.speedsArrays = speedsArrays;
         this.nodesArrays = nodesArrays;
@@ -85,6 +91,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewSpeedsArray,
                 textViewDropErrorRate,
                 textViewDropMisses;
+        Button buttonDelete = viewHolder.getButtonDelete();
         textViewUsername = viewHolder.getTextViewUsername();
         textViewCode = viewHolder.getTextViewCode();
         textViewA = viewHolder.getTextViewA();
@@ -138,6 +145,39 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewDropErrorRate.setText(HtmlCompat.fromHtml("<b>Drop Error Rate: </b>" + newError + "%", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewDropMisses.setText(HtmlCompat.fromHtml("<b>Drop Misses: </b>" + dropMisses.get(position), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
+        final int positionfinal = position;
+
+        buttonDelete.setOnClickListener(v -> {
+            Context context = buttonDelete.getContext();
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(context.getResources().getString(R.string.delete_entry_dialog))
+                    .setPositiveButton(context.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    MyEntry.deleteEntry((Results) buttonDelete.getContext(), data.get(positionfinal));
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    })
+                    .setNegativeButton(context.getResources().getString(R.string.no),  new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    MyEntry.deleteEntry((Results) buttonDelete.getContext(), data.get(positionfinal));
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    }).show();
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -176,6 +216,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 textViewSpeedsArray,
                 textViewDropErrorRate,
                 textViewDropMisses;
+        private Button buttonDelete;
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
@@ -204,6 +245,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             textViewSpeedsArray = view.findViewById(R.id.textViewSpeedsArray);
             textViewDropErrorRate = view.findViewById(R.id.textViewDropErrorRate);
             textViewDropMisses = view.findViewById(R.id.textViewDropMisses);
+            buttonDelete = view.findViewById(R.id.buttonDelete);
         }
 
         public TextView getTextViewUsername() {
@@ -277,6 +319,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         }
         public TextView getTextViewDropMisses() {
             return textViewDropMisses;
+        }
+        public Button getButtonDelete() {
+            return buttonDelete;
         }
         
     }

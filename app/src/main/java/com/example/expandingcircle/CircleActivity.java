@@ -3,8 +3,6 @@ package com.example.expandingcircle;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -19,11 +17,21 @@ import androidx.core.text.HtmlCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CircleActivity extends AppCompatActivity {
     private ExpandingCircle ec;
@@ -86,34 +94,8 @@ public class CircleActivity extends AppCompatActivity {
         super.onStop();
         // Fetching Android ID and storing it into a constant
         String mId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Map<String, Object> data = new HashMap<>();
-        data.put("nodes", nodes);
-        data.put("circleRadius", circleRadius);
-        data.put("maxWidth", maxWidth);
-        data.put("speed", speed);
-        data.put("code", mId);
-        data.put("username", username);
-        data.put("amplitude", amplitude);
-        data.put("minWidth", minWidth);
-        data.put("expand", expand);
-        data.put("from", from);
-        data.put("to", to);
-        data.put("select", select);
-        data.put("mt", mt);
-        data.put("error", error);
-        data.put("currentWidths", currentWidths);
-        List<Integer> myNodes = new ArrayList<>();
-        List<Double> mySpeeds = new ArrayList<>();
-        for (int i = 0; i < MainActivity.node_array.length; i++) {
-            myNodes.add(MainActivity.node_array[i]);
-        }
-        for (int i = 0; i < MainActivity.speed_array.length; i++) {
-            mySpeeds.add(MainActivity.speed_array[i]);
-        }
-        data.put("node_array", myNodes);
-        data.put("speed_array", mySpeeds);
-        db.collection("tests")
-                .add(data);
+        MyEntry newEntry = new MyEntry(nodes, circleRadius, maxWidth, speed, mId, username, amplitude, minWidth, expand, from, to, select, mt, error, currentWidths, MainActivity.node_array, MainActivity.speed_array);
+        MyEntry.fetchAndSend(this.getApplicationContext(), newEntry);
         mt.clear();
         from.clear();
         to.clear();
@@ -152,14 +134,6 @@ public class CircleActivity extends AppCompatActivity {
     }
 
     private void processIntent(Intent i) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        if (activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
-            finish();
-            onBackPressed();
-        }
-
         if (mt.size() == nodes) {
             sendData();
         }
