@@ -76,14 +76,20 @@ public class MyEntry {
         this.amplitude = amplitude;
         this.minWidth = minWidth;
         this.expand = expand;
-        this.from = from;
-        this.to = to;
-        this.select = select;
-        this.mt = mt;
-        this.error = error;
-        this.currentWidths = currentWidths;
-        this.node_array = node_array;
-        this.speed_array = speed_array;
+        this.from = new ArrayList<>(from);
+        this.to = new ArrayList<>(to);
+        this.select = new ArrayList<>(select);
+        this.mt = new ArrayList<>(mt);
+        this.error = new ArrayList<>(error);
+        this.currentWidths = new ArrayList<>(currentWidths);
+        this.node_array = new int[node_array.length];
+        for (int i = 0; i < node_array.length; i++) {
+            this.node_array[i] = node_array[i];
+        }
+        this.speed_array = new double[speed_array.length];
+        for (int i = 0; i < speed_array.length; i++) {
+            this.speed_array[i] = speed_array[i];
+        }
     }
 
     public Map<String, Object> toData() {
@@ -126,22 +132,22 @@ public class MyEntry {
         this.username = Objects.requireNonNull(data.get("username")).toString();
         this.amplitude = Float.parseFloat(Objects.requireNonNull(data.get("amplitude")).toString());
         this.expand = (Boolean) Objects.requireNonNull(data.get("expand"));
-        List<Long> nodes_list =  Objects.requireNonNull((List<Long>) data.get("node_array"));
+        List<Long> nodes_list = new ArrayList<>(Objects.requireNonNull((List<Long>) data.get("node_array")));
         this.node_array = new int[nodes_list.size()];
         for (int i = 0; i < nodes_list.size(); i++) {
             node_array[i] = Math.toIntExact(nodes_list.get(i));
         }
-        List<Double> speed_list =  Objects.requireNonNull((List<Double>) data.get("speed_array"));
+        List<Double> speed_list = new ArrayList<>(Objects.requireNonNull((List<Double>) data.get("speed_array")));
         this.speed_array = new double[speed_list.size()];
         for (int i = 0; i < speed_list.size(); i++) {
             speed_array[i] = speed_list.get(i);
         }
         this.error = Objects.requireNonNull((List<Boolean>) data.get("error"));
-        List<Double> widths =  Objects.requireNonNull((List<Double>) data.get("currentWidths"));
-        List<HashMap> from = (List<HashMap>) data.get("from");
-        List<HashMap> to = (List<HashMap>) data.get("to");
-        List<HashMap> select = (List<HashMap>) data.get("select");
-        List<Double> mt = Objects.requireNonNull((List<Double>) data.get("mt"));
+        List<Double> widths =  new ArrayList<>(Objects.requireNonNull((List<Double>) data.get("currentWidths")));
+        List<HashMap> from = new ArrayList<>(Objects.requireNonNull((List<HashMap>) data.get("from")));
+        List<HashMap> to = new ArrayList<>(Objects.requireNonNull((List<HashMap>) data.get("to")));
+        List<HashMap> select = new ArrayList<>(Objects.requireNonNull((List<HashMap>) data.get("select")));
+        List<Double> mt = new ArrayList<>(Objects.requireNonNull((List<Double>) data.get("mt")));
         if (from != null && to != null && select != null && widths != null && mt != null) {
             this.from.clear();
             this.to.clear();

@@ -72,6 +72,7 @@ public class Results extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText username;
     private Context context;
+    private Results results;
 
     private DialogInterface.OnClickListener removeUsernameDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
@@ -79,6 +80,7 @@ public class Results extends AppCompatActivity {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     MyEntry.deleteUsername(context, username.getText().toString());
+                    fetchAndGet(results, false);
 
                 case DialogInterface.BUTTON_NEGATIVE:
                     //No button clicked
@@ -144,6 +146,7 @@ public class Results extends AppCompatActivity {
         delete_username.setOnClickListener((e) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             context = this.getApplicationContext();
+            results = this;
             builder.setMessage(this.getApplicationContext().getResources().getString(R.string.delete_username_dialog))
                     .setPositiveButton(this.getApplicationContext().getResources().getString(R.string.yes), removeUsernameDialogClickListener)
                     .setNegativeButton(this.getApplicationContext().getResources().getString(R.string.no), removeUsernameDialogClickListener).show();
