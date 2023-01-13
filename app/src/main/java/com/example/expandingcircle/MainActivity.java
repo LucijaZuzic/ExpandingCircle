@@ -25,9 +25,9 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public static final double[] original_speed_array = {50.0d, 150.0d, 250.0d};
+    public static final double[] original_speed_array = {50.0d, 275.0d, 500.0d};
     public static final int[] original_node_array = {5, 7, 9, 11, 13, 15, 17, 19, 21, 23};
-    public static double[] speed_array = {50.0d, 150.0d, 250.0d};
+    public static double[] speed_array = {50.0d, 275.0d, 500.0d};
     public static int[] node_array = {5, 7, 9, 11, 13, 15, 17, 19, 21, 23};
     private EditText username;
 

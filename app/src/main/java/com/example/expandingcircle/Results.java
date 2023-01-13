@@ -77,7 +77,7 @@ public class Results extends AppCompatActivity {
         speedNumberPicker.setMinValue(1);
         speedNumberPicker.setMaxValue(3);
         NumberPicker.Formatter formatter2 = value -> {
-            int temp = (value - 1) * 100 + 50;
+            int temp = (value - 1) * 225 + 50;
             return "" + temp + " px/s";
         };
         speedNumberPicker.setFormatter(formatter2);
@@ -139,7 +139,7 @@ public class Results extends AppCompatActivity {
 
     public void get(boolean saveEnable) {
         Integer nodesToFind = numberOfTargetsNumberPicker.getValue() * 2 - 1;
-        Integer speedToFind = (speedNumberPicker.getValue() - 1) * 100 + 50;
+        Integer speedToFind = (speedNumberPicker.getValue() - 1) * 225 + 50;
 
         throughputValues.clear();
         throughputSelected.clear();
