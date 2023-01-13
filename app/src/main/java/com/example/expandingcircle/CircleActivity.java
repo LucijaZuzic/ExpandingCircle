@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.text.HtmlCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -47,7 +48,7 @@ public class CircleActivity extends AppCompatActivity {
     public static List<Boolean> error = new ArrayList<>();
     public static List<PointF> from = new ArrayList<>(), to = new ArrayList<>(), select = new ArrayList<>();
     private ConstraintLayout drag_area;
-    private TextView speedTextView, timeTextView, radiusTextView;
+    private TextView speedTextView, timeTextView, radiusTextView, nodeOrder, speedOrder;
     private LinearLayout banner, parent;
     private View array[] = new View[nodes];
 
@@ -138,6 +139,9 @@ public class CircleActivity extends AppCompatActivity {
         radiusTextView = findViewById(R.id.radius);
         timeTextView = findViewById(R.id.time);
 
+        nodeOrder = findViewById(R.id.nodeOrder);
+        speedOrder = findViewById(R.id.speedOrder);
+
         processIntent(getIntent());
     }
 
@@ -173,10 +177,12 @@ public class CircleActivity extends AppCompatActivity {
             speed_index = i.getExtras().getInt("speed_index");
         }
         speed = MainActivity.speed_array[speed_index];
+        speedOrder.setText(HtmlCompat.fromHtml("<b>Speed Number: </b>" + (speed_index + 1) + " / " + MainActivity.original_speed_array.length, HtmlCompat.FROM_HTML_MODE_LEGACY));
         if (i.hasExtra("nodes_index")) {
             nodes_index = i.getExtras().getInt("nodes_index");
         }
         nodes = MainActivity.node_array[nodes_index];
+        nodeOrder.setText(HtmlCompat.fromHtml("<b>Node Number: </b>" + (nodes_index + 1) + " / " + MainActivity.original_node_array.length, HtmlCompat.FROM_HTML_MODE_LEGACY));
         if (i.hasExtra("start_node")) {
             start_node = i.getExtras().getInt("start_node");
         }
