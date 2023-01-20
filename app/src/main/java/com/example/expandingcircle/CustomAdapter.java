@@ -129,7 +129,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         textViewMT.setText(HtmlCompat.fromHtml("<b>MT: </b>" + ((Float) thp.getMT() + " ms"), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewNumberOfTrials.setText(HtmlCompat.fromHtml("<b>Number Of Trials: </b>" + ((Integer) thp.getNumberOfTrials()), HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewSDx.setText(HtmlCompat.fromHtml("<b>SDx: </b>" + thp.getSDx() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        textViewThroughput.setText(HtmlCompat.fromHtml("<b>Thp: </b>" + thp.getThroughput() + " b/ms", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textViewThroughput.setText(HtmlCompat.fromHtml("<b>Thp: </b>" + thp.getThroughput() + " b/s", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewW.setText(HtmlCompat.fromHtml("<b>Avg. W: </b>" + thp.getW() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewWe.setText(HtmlCompat.fromHtml("<b>We: </b>" + thp.getWe() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));
         textViewX.setText(HtmlCompat.fromHtml("<b>X: </b>" + thp.getX() + " px", HtmlCompat.FROM_HTML_MODE_LEGACY));

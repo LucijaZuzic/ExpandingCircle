@@ -364,6 +364,9 @@ public class Results extends AppCompatActivity {
         if (checkBoxSpeed.isChecked() || checkBoxNodesAndSpeed.isChecked()) {
             fileName += "_speed_" + speedToFind.toString();
         }
+        if (checkBoxUsername.isChecked()) {
+            fileName += "_username_" + username.getText().toString();
+        }
         fileName += ".csv";
 
         Intent i = new Intent(Intent.ACTION_SEND);
